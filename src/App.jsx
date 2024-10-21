@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
 import { getTickets } from "./services/ticketService.js"
+import "./App.css"
 
 export const App = () => {
 const [allTickets, setAllTickets] = useState([])
 const [showEmergencyOnly, setShowEmergencyOnly] = useState(false)
+const [filteredTickets, setFilteredTickets] = useState([])
 
   useEffect(() => {
     getTickets().then((ticketsArray) => {
@@ -13,8 +15,13 @@ const [showEmergencyOnly, setShowEmergencyOnly] = useState(false)
   }, []) //ONLY runs on initial render of component BECAUSE its empty
 
   useEffect(() => {
-    console.log("Show Emergency Changed")
-  }, [showEmergencyOnly])
+    if (showEmergencyOnly === true) {
+      const emergencyTickets = allTickets.filter(ticket => ticket.emergency === true)
+      setFilteredTickets(emergencyTickets)
+    } else {
+      setFilteredTickets(allTickets)
+    }
+  }, [showEmergencyOnly, allTickets]) //not showEmergencyOnly. allTickets because the state is depending on allTickets to render intially
 
   return (
     <div className="tickets-container">
@@ -32,7 +39,7 @@ const [showEmergencyOnly, setShowEmergencyOnly] = useState(false)
         >Show All</button>
       </div>
       <article className="tickets">
-        {allTickets.map((ticket) => {
+        {filteredTickets.map((ticket) => {
           return (
             <section className="ticket" key={ticket.id}>
               <header className="ticket-info">#{ticket.id}</header>
