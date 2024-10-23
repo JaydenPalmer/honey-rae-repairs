@@ -3,3 +3,9 @@ export const getNonStaffUsers = () => {
     res.json()
   );
 };
+
+export const getStaff = () => {
+  return fetch("http://localhost:8088/users?isStaff=true").then((res) =>
+    res.json()
+  );
+};
